@@ -27,6 +27,7 @@
   "dependencies": {
     "botkit": "0.0.5",
     "botkit-storage-mongo": "^1.0.2",
+    "firebase": "^2.4.2",
     "google-auth-library": "^0.9.8",
     "googleapis": "^7.0.0",
     "mongodb": "^1.4.39"
