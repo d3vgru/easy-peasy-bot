@@ -81,6 +81,9 @@ controller.on('rtm_close', function (bot) {
  */
 // BEGIN EDITING HERE!
 
+var Firebase = require('firebase');
+var db = new Firebase("https://sorryjb.firebaseio.com/");
+
 var sorryjbChan = 'C19JGEL5B'; // #sorryjb
 
 var userHash = {
@@ -101,10 +104,11 @@ controller.hears('^S(\\d+)E(\\d+):? ?(.+)$', 'ambient', function (bot, message) 
 	bot.api.users.info({user: message.user}, function(err, response) {
 		if(response) {
 			// from response
-			var name = response.user.name;
-			if(userHash[name])
-				name = userHash[name];
-			name = '[' + name + ']';
+			var userName = response.user.name;
+			var displayName = userName;
+			if(userHash[userName])
+				displayName = userHash[userName];
+			displayName = '[' + displayName + ']';
 
 			// from regex
 			var season = message.match[1];
@@ -115,11 +119,20 @@ controller.hears('^S(\\d+)E(\\d+):? ?(.+)$', 'ambient', function (bot, message) 
 			var prodCode = 'S' + season + 'E' + episode;
 			var recap = prodCode + ': ' + desc;
 	
-			// 1) TODO? save [name, prodCode, desc] to DB(s) somewhere
-			
+			// 1) save [name, prodCode, desc] to Firebase
+			var episodes = db.child("episodes");
+			var newEp = episodes.push();
+			newEp.set({
+				author: userName,
+				user: message.user,
+				prodCode: prodCode,
+				season: season,
+				episode: episode,
+				synopsis: desc
+			});
 
 			// 2) TODO? save to Google Doc
-			var appendToDoc = name + '\n' + recap + '\n\n';
+			var appendToDoc = '[' + userName + ']\n' + recap + '\n\n';
 			
 
 			// stop processing if message was posted directly to #sorryjb
@@ -128,7 +141,7 @@ controller.hears('^S(\\d+)E(\\d+):? ?(.+)$', 'ambient', function (bot, message) 
 
 			// 3) repost message like [user]: SxxEyy: [description]
 			bot.say({
-				text: name + ': ' + recap,
+				text: displayName + ': ' + recap,
 				channel: sorryjbChan
 			});
 		}
