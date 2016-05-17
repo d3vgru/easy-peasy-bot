@@ -81,24 +81,37 @@ controller.on('rtm_close', function (bot) {
  */
 // BEGIN EDITING HERE!
 
+var sorryjbChan = 'C19JGEL5B'; // #sorryjb
+
 controller.on('bot_channel_join', function (bot, message) {
     bot.reply(message, "I'm here!")
 });
 
-controller.hears('^S(\\n+)E(\\n+):? ?(.+)$', 'ambient', function (bot, message) {
-	// 1) if not in #sorryjb, repost message like [user]: SxxEyy: [description]
-	// TODO filter posts in #sorryjb
-	var recap = 'S' + message.match[1] + 'E' + message.match[2] + ': ' + message.match[3];
-	bot.say({
-		text: recap,
-		channel: '#sorryjb'
-	});
+controller.hears('^S(\\d+)E(\\d+):? ?(.+)$', 'ambient', function (bot, message) {
+	// reformat message
+	bot.api.users.info({user: message.user}, function(err, response) {
+		if(response) {
+			var name = response.user.name;
+			
+			var recap = '[' + name + ']: ';
+			recap += 'S' + message.match[1] + 'E' + message.match[2] + ': ' + message.match[3];
 	
-	// 2) TODO? save to DB(s) somewhere
+			// 1) TODO? save to DB(s) somewhere
 	
 
-	// 3) TODO? save to Google Doc
-		
+			// 2) TODO? save to Google Doc
+
+			// stop processing if message was posted directly to #sorryjb
+			if(message.channel == sorryjbChan)
+				return;
+
+			// 3) repost message like [user]: SxxEyy: [description]
+			bot.say({
+				text: recap,
+				channel: sorryjbChan
+			});
+		}
+	});
 });
 
 
