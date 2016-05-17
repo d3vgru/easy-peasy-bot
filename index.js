@@ -83,23 +83,44 @@ controller.on('rtm_close', function (bot) {
 
 var sorryjbChan = 'C19JGEL5B'; // #sorryjb
 
+var userHash = {
+	'artax': 'John',
+	'cohaagen': 'Ed',
+	'edgemar': 'Mark',
+	'lordlobo': 'Dan',
+	'richter': 'Bryan'
+};
+
+
 controller.on('bot_channel_join', function (bot, message) {
     bot.reply(message, "I'm here!")
 });
 
 controller.hears('^S(\\d+)E(\\d+):? ?(.+)$', 'ambient', function (bot, message) {
-	// reformat message
+	// get username
 	bot.api.users.info({user: message.user}, function(err, response) {
 		if(response) {
+			// from response
 			var name = response.user.name;
+			if(userHash[name])
+				name = userHash[name];
+			name = '[' + name + ']';
+
+			// from regex
+			var season = message.match[1];
+			var episode = message.match[2];
+			var desc = message.match[3];
 			
-			var recap = '[' + name + ']: ';
-			recap += 'S' + message.match[1] + 'E' + message.match[2] + ': ' + message.match[3];
+			// computed
+			var prodCode = 'S' + season + 'E' + episode;
+			var recap = prodCode + ': ' + desc;
 	
-			// 1) TODO? save to DB(s) somewhere
-	
+			// 1) TODO? save [name, prodCode, desc] to DB(s) somewhere
+			
 
 			// 2) TODO? save to Google Doc
+			var appendToDoc = name + '\n' + recap + '\n\n';
+			
 
 			// stop processing if message was posted directly to #sorryjb
 			if(message.channel == sorryjbChan)
@@ -107,7 +128,7 @@ controller.hears('^S(\\d+)E(\\d+):? ?(.+)$', 'ambient', function (bot, message) 
 
 			// 3) repost message like [user]: SxxEyy: [description]
 			bot.say({
-				text: recap,
+				text: name + ': ' + recap,
 				channel: sorryjbChan
 			});
 		}
