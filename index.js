@@ -85,8 +85,20 @@ controller.on('bot_channel_join', function (bot, message) {
     bot.reply(message, "I'm here!")
 });
 
-controller.hears('hello', 'direct_message', function (bot, message) {
-    bot.reply(message, 'Hello!');
+controller.hears('^S(\\n+)E(\\n+):? ?(.+)$', 'ambient', function (bot, message) {
+	// 1) if not in #sorryjb, repost message like [user]: SxxEyy: [description]
+	// TODO filter posts in #sorryjb
+	var recap = 'S' + message.match[1] + 'E' + message.match[2] + ': ' + message.match[3];
+	bot.say({
+		text: recap,
+		channel: '#sorryjb'
+	});
+	
+	// 2) TODO? save to DB(s) somewhere
+	
+
+	// 3) TODO? save to Google Doc
+		
 });
 
 
