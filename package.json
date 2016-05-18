@@ -1,7 +1,7 @@
 {
   "name": "sorryjbot",
   "version": "1.0.0",
-  "description": "The awesomest bot evar.",
+  "description": "The awesomest bot evar that logs episode synopses into Slack and Firebase.",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
@@ -28,8 +28,7 @@
     "botkit": "0.0.5",
     "botkit-storage-mongo": "^1.0.2",
     "firebase": "^2.4.2",
-    "google-auth-library": "^0.9.8",
-    "googleapis": "^7.0.0",
-    "mongodb": "^1.4.39"
+    "mongodb": "^1.4.39",
+    "nodegit": "^0.13.0"
   }
 }
