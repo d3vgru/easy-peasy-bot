@@ -84,6 +84,18 @@ controller.on('rtm_close', function (bot) {
 var Firebase = require('firebase');
 var db = new Firebase("https://sorryjb.firebaseio.com/");
 
+var fs = require('fs');
+var firebaseConfig = JSON.parse(fs.readFileSync('config/firebase.json'));
+
+// config format: {"token": "<actual firebase token string>"}
+db.authWithCustomToken(firebaseConfig.token, function(err, response) {
+	if(err) {
+		console.log("ERROR: " + JSON.stringify(err));
+	} else {
+		console.log("Auth Response: " + JSON.stringify(response));
+	}
+});
+
 var sorryjbChan = 'C19JGEL5B'; // #sorryjb
 
 var userHash = {
