@@ -29,7 +29,6 @@
     "botkit-storage-mongo": "^1.0.2",
     "firebase": "^2.4.2",
     "firebase-token-generator": "^2.0.0",
-    "mongodb": "^1.4.39",
-    "nodegit": "^0.13.0"
+    "mongodb": "^1.4.39"
   }
 }
