@@ -108,7 +108,7 @@ var userHash = {
 
 
 controller.on('bot_channel_join', function (bot, message) {
-    bot.reply(message, "I'm here!")
+    bot.reply(message, "I'm here! COME ON, DO IT NOW, KILL ME!")
 });
 
 controller.hears('^S(\\d+)E(\\d+):? ?(.+)$', 'ambient', function (bot, message) {
