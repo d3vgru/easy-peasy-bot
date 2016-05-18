@@ -136,7 +136,6 @@ controller.hears('^S(\\d+)E(\\d+):? ?(.+)$', 'ambient', function (bot, message) 
 			var newEp = episodes.push();
 			newEp.set({
 				author: userName,
-				user: message.user,
 				prodCode: prodCode,
 				season: season,
 				episode: episode,
