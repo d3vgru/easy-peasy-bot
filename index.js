@@ -144,8 +144,7 @@ controller.hears('^S(\\d+)E(\\d+):? ?(.+)$', 'ambient', function (bot, message) 
 
 			// 2) TODO? save to Google Doc
 			var appendToDoc = '[' + userName + ']\n' + recap + '\n\n';
-			
-
+            
 			// stop processing if message was posted directly to #sorryjb
 			if(message.channel == sorryjbChan)
 				return;
@@ -159,20 +158,41 @@ controller.hears('^S(\\d+)E(\\d+):? ?(.+)$', 'ambient', function (bot, message) 
 	});
 });
 
+// respond to some commands
+controller.on('direct_message,mention,direct_mention', function (bot, message) {
+    var splitMsg = message.split(' ');
+    
+    var command = splitMsg[1];
+    var param = splitMsg[2];
+    
+    // could probably be a switch
+    
+    // "@sorryjbot replay S01E01" response
+    if (command === 'replay') {
+        var prodCode = param;
+        
+        db.ref('episodes/prodCode/' + prodCode)
+            .once('value')
+            .then(function (data) {
+                sayEpisode(data, message.channel);
+            });
+    }
+    
+    if (command === 'season') {
+        var season = param;
+        
+        db.ref('episodes/season/' + season)
+            .once('value')
+            .then(function (episodes) {
+                for (episode in episodes) {
+                    sayEpisode(episode, message.channel);
+                }
+            });
+    }    
+});
 
-/**
- * AN example of what could be:
- * Any un-handled direct mention gets a reaction and a pat response!
- */
-//controller.on('direct_message,mention,direct_mention', function (bot, message) {
-//    bot.api.reactions.add({
-//        timestamp: message.ts,
-//        channel: message.channel,
-//        name: 'robot_face',
-//    }, function (err) {
-//        if (err) {
-//            console.log(err)
-//        }
-//        bot.reply(message, 'I heard you loud and clear boss.');
-//    });
-//});
+// re-usable method to say an episode
+function sayEpisode(episode, channel) {
+    bot.say({text: data.prodCode + ' ' + data.synopsis + ' ' + ' - by '  + data.author,
+             channel: message.channel});
+}
