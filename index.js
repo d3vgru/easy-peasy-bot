@@ -84,17 +84,9 @@ controller.on('rtm_close', function (bot) {
 var Firebase = require('firebase');
 var db = new Firebase("https://sorryjb.firebaseio.com/");
 
+// config format: {"secret": "<actual firebase secret string>"}
 var fs = require('fs');
 var firebaseConfig = JSON.parse(fs.readFileSync('config/firebase.json'));
-
-// config format: {"token": "<actual firebase token string>"}
-db.authWithCustomToken(firebaseConfig.token, function(err, response) {
-	if(err) {
-		console.log("ERROR: " + JSON.stringify(err));
-	} else {
-		console.log("Auth Response: " + JSON.stringify(response));
-	}
-});
 
 var sorryjbChan = 'C19JGEL5B'; // #sorryjb
 
@@ -132,24 +124,23 @@ controller.hears('^S(\\d+)E(\\d+):? ?(.+)$', 'ambient', function (bot, message) 
 			var recap = prodCode + ': ' + desc;
 	
 			// 1) save [name, prodCode, desc] to Firebase
-			var episodes = db.child("episodes");
-			var newEp = episodes.push();
-			newEp.set({
-				author: userName,
-				prodCode: prodCode,
-				season: season,
-				episode: episode,
-				synopsis: desc
+			withFirebase(function() {
+				var episodes = db.child("episodes");
+				var newEp = episodes.push();
+				newEp.set({
+					author: userName,
+					prodCode: prodCode,
+					season: season,
+					episode: episode,
+					synopsis: desc
+				});
 			});
 
-			// 2) TODO? save to Google Doc
-			var appendToDoc = '[' + userName + ']\n' + recap + '\n\n';
-            
 			// stop processing if message was posted directly to #sorryjb
 			if(message.channel == sorryjbChan)
 				return;
 
-			// 3) repost message like [user]: SxxEyy: [description]
+			// 2) repost message like [user]: SxxEyy: [description]
 			bot.say({
 				text: displayName + ': ' + recap,
 				channel: sorryjbChan
@@ -171,23 +162,27 @@ controller.on('direct_message,mention,direct_mention', function (bot, message) {
     if (command === 'replay') {
         var prodCode = param;
         
-        db.ref('episodes/prodCode/' + prodCode)
-            .once('value')
-            .then(function (data) {
-                sayEpisode(data, message.channel);
-            });
+        withFirebase(function() {
+	        db.ref('episodes/prodCode/' + prodCode)
+    	        .once('value')
+        	    .then(function (data) {
+            	    sayEpisode(data, message.channel);
+            	});
+        });
     }
     
     if (command === 'season') {
         var season = param;
         
-        db.ref('episodes/season/' + season)
-            .once('value')
-            .then(function (episodes) {
-                for (episode in episodes) {
-                    sayEpisode(episode, message.channel);
-                }
-            });
+        withFirebase(function() {
+	        db.ref('episodes/season/' + season)
+    	        .once('value')
+        	    .then(function (episodes) {
+            	    for (episode in episodes) {
+                	    sayEpisode(episode, message.channel);
+	                }
+    	        });
+    	});
     }    
 });
 
@@ -195,4 +190,16 @@ controller.on('direct_message,mention,direct_mention', function (bot, message) {
 function sayEpisode(episode, channel) {
     bot.say({text: data.prodCode + ' ' + data.synopsis + ' ' + ' - by '  + data.author,
              channel: message.channel});
+}
+
+// log in and execute callback
+function withFirebase(callback) {
+	db.authWithCustomToken(firebaseConfig.secret, function(err, response) {
+		if(err) {
+			console.log("ERROR: " + JSON.stringify(err));
+		} else {
+//			console.log("Auth Response: " + JSON.stringify(response));
+			callback();
+		}
+	});
 }
