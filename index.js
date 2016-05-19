@@ -150,8 +150,8 @@ controller.hears('^S(\\d+)E(\\d+):? ?(.+)$', 'ambient', function (bot, message) 
 });
 
 // respond to some commands
-controller.on('direct_message,mention,direct_mention', function (bot, message) {
-    var splitMsg = message.split(' ');
+controller.on('direct_mention', function (bot, message) {
+    var splitMsg = message.text.split(' ');
     
     var command = splitMsg[1];
     var param = splitMsg[2];
@@ -189,7 +189,7 @@ controller.on('direct_message,mention,direct_mention', function (bot, message) {
 // re-usable method to say an episode
 function sayEpisode(episode, channel) {
     bot.say({text: data.prodCode + ' ' + data.synopsis + ' ' + ' - by '  + data.author,
-             channel: message.channel});
+             channel: channel});
 }
 
 // log in and execute callback
