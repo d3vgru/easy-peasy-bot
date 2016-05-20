@@ -135,6 +135,12 @@ controller.hears('^S(\\d+)E(\\d+):? ?(.+)$', 'ambient', function (bot, message) 
 					synopsis: desc
 				});
 			});
+			
+			// update channel topic
+			var topic = "Latest: " + prodCode +
+				" / Code: https://github.com/d3vgru/easy-peasy-bot" +
+				" / Data: https://sorryjb.firebaseio.com/";
+			bot.api.channels.setTopic({channel: sorryJbChan, topic: topic});
 
 			// stop processing if message was posted directly to #sorryjb
 			if(message.channel == sorryjbChan)
