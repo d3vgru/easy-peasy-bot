@@ -25,7 +25,7 @@
     "node": "5.1.1"
   },
   "dependencies": {
-    "botkit": "d3vgru/botkit",
+    "botkit": "0.0.5",
     "botkit-storage-mongo": "^1.0.2",
     "firebase": "^2.4.2",
     "firebase-token-generator": "^2.0.0",

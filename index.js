@@ -66,14 +66,39 @@ if (process.env.TOKEN || process.env.SLACK_TOKEN) {
  * TODO: fixed b0rked reconnect behavior
  */
 // Handle events related to the websocket connection to Slack
+var attempts = 1;
+
 controller.on('rtm_open', function (bot) {
     console.log('** The RTM api just connected!');
+    attempts = 1;
 });
 
 controller.on('rtm_close', function (bot) {
     console.log('** The RTM api just closed');
     // you may want to attempt to re-open
+    var time = generateInterval(attempts);
+    
+    setTimeout(function () {
+        // We've tried to reconnect so increment the attempts by 1
+        attempts++;
+        
+        console.log('-attempt #' + attempts);
+        
+        // Connection has closed so try to reconnect every 10 seconds.
+        bot.startRTM(); 
+    }, time);
 });
+
+function generateInterval (k) {
+  var maxInterval = (Math.pow(2, k) - 1) * 1000;
+  
+  if (maxInterval > 30*1000) {
+    maxInterval = 30*1000; // If the generated interval is more than 30 seconds, truncate it down to 30 seconds.
+  }
+  
+  // generate the interval to a random number between 0 and the maxInterval determined from above
+  return Math.random() * maxInterval; 
+}
 
 
 /**
