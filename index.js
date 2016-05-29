@@ -162,7 +162,8 @@ controller.hears('^S(\\d+)E(\\d+):? ?(.+)$', 'ambient', function (bot, message) 
 					episode: episode,
 					synopsis: desc,
 					ts: message.ts,
-					user: message.user
+					user: message.user,
+					channel: message.channel
 				});
 			});
 			
