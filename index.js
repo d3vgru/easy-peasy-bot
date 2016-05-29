@@ -103,6 +103,8 @@ controller.on('bot_channel_join', function (bot, message) {
     bot.reply(message, "I'm here! COME ON, DO IT NOW, KILL ME!")
 });
 
+
+// listen for SxxEyy
 controller.hears('^S(\\d+)E(\\d+):? ?(.+)$', 'ambient', function (bot, message) {
 	// get username
 	bot.api.users.info({user: message.user}, function(err, response) {
@@ -124,6 +126,7 @@ controller.hears('^S(\\d+)E(\\d+):? ?(.+)$', 'ambient', function (bot, message) 
 			var recap = prodCode + ': ' + desc;
 	
 			// 1) save [name, prodCode, desc] to Firebase
+			// TODO: store message ID to support edits
 			withFirebase(function() {
 				var episodes = db.child("episodes");
 				var newEp = episodes.push();
@@ -132,7 +135,9 @@ controller.hears('^S(\\d+)E(\\d+):? ?(.+)$', 'ambient', function (bot, message) 
 					prodCode: prodCode,
 					season: season,
 					episode: episode,
-					synopsis: desc
+					synopsis: desc,
+					ts: message.ts,
+					user: message.user
 				});
 			});
 			
@@ -154,6 +159,10 @@ controller.hears('^S(\\d+)E(\\d+):? ?(.+)$', 'ambient', function (bot, message) 
 		}
 	});
 });
+
+
+// TODO listen for edits and update if a message edit corresponds to an episode
+
 
 // respond to some commands
 controller.on('direct_mention', function (bot, message) {
