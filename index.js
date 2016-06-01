@@ -151,7 +151,6 @@ controller.hears('^S(\\d+)E(\\d+):? ?(.+)$', 'ambient', function (bot, message) 
 			var recap = prodCode + ': ' + desc;
 	
 			// 1) save [name, prodCode, desc] to Firebase
-			// TODO: store message ID to support edits
 			withFirebase(function() {
 				var episodes = db.child("episodes");
 				var newEp = episodes.push();
