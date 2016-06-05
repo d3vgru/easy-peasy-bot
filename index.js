@@ -163,6 +163,16 @@ controller.hears('^S(\\d+)E(\\d+):? ?(.+)$', 'ambient', function (bot, message) 
 					ts: message.ts,
 					user: message.user,
 					channel: message.channel
+				}, function(err) {
+					if(err === null) {
+						bot.api.reactions.add({
+							name: "white_check_mark",
+							ts: message.ts,
+							channel: message.channel
+						});
+					} else {
+						console.log("SAVE EPISODE ERROR: " + JSON.stringify(err));
+					}
 				});
 			});
 			
@@ -236,7 +246,7 @@ function sayEpisode(episode, channel) {
 function withFirebase(callback) {
 	db.authWithCustomToken(firebaseConfig.secret, function(err, response) {
 		if(err) {
-			console.log("ERROR: " + JSON.stringify(err));
+			console.log("AUTH ERROR: " + JSON.stringify(err));
 		} else {
 //			console.log("Auth Response: " + JSON.stringify(response));
 			callback();
