@@ -167,7 +167,7 @@ controller.hears('^S(\\d+)E(\\d+):? ?(.+)$', 'ambient', function (bot, message) 
 					if(err === null) {
 						bot.api.reactions.add({
 							name: "white_check_mark",
-							ts: message.ts,
+							timestamp: message.ts,
 							channel: message.channel
 						});
 					} else {
