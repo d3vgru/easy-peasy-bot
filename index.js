@@ -131,6 +131,8 @@ controller.on('bot_channel_join', function (bot, message) {
 
 // listen for SxxEyy
 controller.hears('^S(\\d+)E(\\d+):? ?(.+)$', 'ambient', function (bot, message) {
+	console.log('SxxEyy format detected');
+	
 	// get username
 	bot.api.users.info({user: message.user}, function(err, response) {
 		if(response) {
@@ -197,6 +199,7 @@ controller.hears('^S(\\d+)E(\\d+):? ?(.+)$', 'ambient', function (bot, message) 
 
 
 // TODO listen for edits and update if a message edit corresponds to an episode
+// make sure this isn't triggered already above
 
 
 // respond to some commands
@@ -205,6 +208,10 @@ controller.on('direct_mention', function (bot, message) {
     
     var command = splitMsg[1];
     var param = splitMsg[2];
+    
+    console.log('direct mention detected: ' + JSON.stringify(message));
+    console.log('-command: ' + command);
+    console.log('-param: ' + param);
     
     // could probably be a switch
     
