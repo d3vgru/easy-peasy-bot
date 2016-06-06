@@ -113,6 +113,7 @@ var db = new Firebase("https://sorryjb.firebaseio.com/");
 var fs = require('fs');
 var firebaseConfig = JSON.parse(fs.readFileSync('config/firebase.json'));
 
+var devChan = 'C1A823S56'; // #sorryjbdev
 var sorryjbChan = 'C19JGEL5B'; // #sorryjb
 
 var userHash = {
@@ -132,6 +133,9 @@ controller.on('bot_channel_join', function (bot, message) {
 // listen for SxxEyy
 controller.hears('^S(\\d+)E(\\d+):? ?(.+)$', 'ambient', function (bot, message) {
 	console.log('SxxEyy format detected');
+	
+	if(message.channel == devChan)
+		return;
 	
 	// get username
 	bot.api.users.info({user: message.user}, function(err, response) {
@@ -206,12 +210,8 @@ controller.hears('^S(\\d+)E(\\d+):? ?(.+)$', 'ambient', function (bot, message) 
 controller.on('direct_mention', function (bot, message) {
     var splitMsg = message.text.split(' ');
     
-    var command = splitMsg[1];
-    var param = splitMsg[2];
-    
-    console.log('direct mention detected: ' + JSON.stringify(message));
-    console.log('-command: ' + command);
-    console.log('-param: ' + param);
+    var command = splitMsg[0];
+    var param = splitMsg[1];
     
     // could probably be a switch
     
@@ -220,11 +220,8 @@ controller.on('direct_mention', function (bot, message) {
         var prodCode = param;
         
         withFirebase(function() {
-	        db.ref('episodes/prodCode/' + prodCode)
-    	        .once('value')
-        	    .then(function (data) {
-            	    sayEpisode(data, message.channel);
-            	});
+	        var data = db.child('episodes/prodCode/' + prodCode);
+            sayEpisode(data, message.channel);
         });
     }
     
