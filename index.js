@@ -208,7 +208,6 @@ controller.hears('^S(\\d+)E(\\d+):? ?(.+)$', 'ambient', function (bot, message) 
 // respond to some commands
 controller.on('direct_mention', function (bot, message) {
     var splitMsg = message.text.split(' ');
-    
     var command = splitMsg[0];
     var param = splitMsg[1];
     
@@ -229,9 +228,11 @@ controller.on('direct_mention', function (bot, message) {
         db.child('episodes')
         	.orderByChild(queryKey)
         	.equalTo(param)
-        	.once('value', function(episode) {
-        		console.log("episode: " + JSON.stringify(episode));
-//        		sayEpisode(bot, episode, message.channel);
+        	.once('value', function(episodes) {
+        		episodes.forEach(function(episode) {
+	        		console.log("episode: " + JSON.stringify(episode));
+//  	      		sayEpisode(bot, episode, message.channel);
+				});
 	        });
     });
 });
