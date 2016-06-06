@@ -232,7 +232,7 @@ controller.on('direct_mention', function (bot, message) {
         	.once('value', function(episode) {
         		sayEpisode(bot, episode, message.channel);
 	        });
-    }
+    });
 });
 
 
