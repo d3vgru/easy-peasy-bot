@@ -230,7 +230,7 @@ controller.on('direct_mention', function (bot, message) {
         	.equalTo(param)
         	.once('value', function(episodes) {
         		episodes.forEach(function(episode) {
-  	      		sayEpisode(bot, episode.val(), message.channel);
+  	      			sayEpisode(bot, episode.val(), message.channel);
 				});
 	        });
     });
@@ -239,7 +239,7 @@ controller.on('direct_mention', function (bot, message) {
 
 // re-usable method to say an episode
 function sayEpisode(bot, episode, channel) {
-    bot.say({text: episode.prodCode + ' ' + episode.synopsis + ' - by ' + episode.author,
+    bot.say({text: episode.prodCode + ': ' + episode.synopsis + ' -by ' + episode.author,
              channel: channel});
 }
 
