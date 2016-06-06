@@ -203,7 +203,6 @@ controller.hears('^S(\\d+)E(\\d+):? ?(.+)$', 'ambient', function (bot, message) 
 
 
 // TODO listen for edits and update if a message edit corresponds to an episode
-// make sure this isn't triggered already above
 
 
 // respond to some commands
@@ -217,11 +216,12 @@ controller.on('direct_mention', function (bot, message) {
     
     // "@sorryjbot: replay S01E01" response
     if (command === 'replay') {
-        var prodCode = param;
-        
         withFirebase(function() {
-	        var episode = db.child('episodes/prodCode/' + prodCode);
-            sayEpisode(bot, episode, message.channel);
+        	// I do not think this means what you think it means
+	        var data = db.child('episodes/prodCode/' + param);
+	        data.once('value', function(episode) {
+	        	sayEpisode(bot, episode, message.channel);
+	        }
         });
     }
     
