@@ -228,19 +228,20 @@ controller.on('direct_mention', function (bot, message) {
     withFirebase(function() {
         db.child('episodes')
         	.orderByChild(queryKey)
-	        	.equalTo(param)
-	        	.once('value', function(episode) {
-	        		sayEpisode(bot, episode, message.channel);
-	        	});
-        });
+        	.equalTo(param)
+        	.once('value', function(episode) {
+        		sayEpisode(bot, episode, message.channel);
+	        });
     }
 });
+
 
 // re-usable method to say an episode
 function sayEpisode(bot, episode, channel) {
     bot.say({text: episode.prodCode + ' ' + episode.synopsis + ' - by ' + episode.author,
              channel: channel});
 }
+
 
 // log in and execute callback
 function withFirebase(callback) {
