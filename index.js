@@ -212,33 +212,28 @@ controller.on('direct_mention', function (bot, message) {
     var command = splitMsg[0];
     var param = splitMsg[1];
     
-    // could probably be a switch
-    
-    // "@sorryjbot: replay S01E01" response
-    if (command === 'replay') {
-        withFirebase(function() {
-        	// I do not think this means what you think it means
-	        var data = db.child('episodes/prodCode/' + param);
-	        console.log("data: " + JSON.stringify(data));
-	        
-	        data.once('value', function(episode) {
-		        console.log("-episode: " + JSON.stringify(episode));
-	        	sayEpisode(bot, episode, message.channel);
-	        });
-        });
+    var queryKey = 'prodCode';
+    switch(command) {
+    	case 'replay':
+		    // "@sorryjbot: replay S01E01" response
+    		break;
+    	case 'season':
+		    // "@sorryjbot: season 01" response
+    		queryKey = 'season';
+    		break;
+    	default:
+    		return;
     }
     
-    // "@sorryjbot: season 01" response
-    if (command === 'season') {
-        var season = param;
-        
-        withFirebase(function() {
-	        var episodes = db.child('episodes/season/' + season);
-			for(episode in episodes) {
-				sayEpisode(bot, episode, message.channel);
-			}
-    	});
-    }    
+    withFirebase(function() {
+        db.child('episodes')
+        	.orderByChild(queryKey)
+	        	.equalTo(param)
+	        	.once('value', function(episode) {
+	        		sayEpisode(bot, episode, message.channel);
+	        	});
+        });
+    }
 });
 
 // re-usable method to say an episode
