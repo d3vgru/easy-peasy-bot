@@ -230,7 +230,8 @@ controller.on('direct_mention', function (bot, message) {
         	.orderByChild(queryKey)
         	.equalTo(param)
         	.once('value', function(episode) {
-        		sayEpisode(bot, episode, message.channel);
+        		console.log("episode: " + JSON.stringify(episode));
+//        		sayEpisode(bot, episode, message.channel);
 	        });
     });
 });
