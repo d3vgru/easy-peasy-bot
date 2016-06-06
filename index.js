@@ -230,9 +230,7 @@ controller.on('direct_mention', function (bot, message) {
         	.equalTo(param)
         	.once('value', function(episodes) {
         		episodes.forEach(function(episode) {
-	        		console.log("key: " + episode.key());
-	        		console.log("-val: " + JSON.stringify(episode.val()));
-//  	      		sayEpisode(bot, episode, message.channel);
+  	      		sayEpisode(bot, episode.val(), message.channel);
 				});
 	        });
     });
