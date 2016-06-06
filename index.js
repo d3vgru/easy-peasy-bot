@@ -219,7 +219,10 @@ controller.on('direct_mention', function (bot, message) {
         withFirebase(function() {
         	// I do not think this means what you think it means
 	        var data = db.child('episodes/prodCode/' + param);
+	        console.log("data: " + JSON.stringify(data));
+	        
 	        data.once('value', function(episode) {
+		        console.log("-episode: " + JSON.stringify(episode));
 	        	sayEpisode(bot, episode, message.channel);
 	        });
         });
