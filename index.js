@@ -221,7 +221,7 @@ controller.on('direct_mention', function (bot, message) {
 	        var data = db.child('episodes/prodCode/' + param);
 	        data.once('value', function(episode) {
 	        	sayEpisode(bot, episode, message.channel);
-	        }
+	        });
         });
     }
     
