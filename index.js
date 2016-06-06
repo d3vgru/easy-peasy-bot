@@ -215,33 +215,31 @@ controller.on('direct_mention', function (bot, message) {
     
     // could probably be a switch
     
-    // "@sorryjbot replay S01E01" response
+    // "@sorryjbot: replay S01E01" response
     if (command === 'replay') {
         var prodCode = param;
         
         withFirebase(function() {
-	        var data = db.child('episodes/prodCode/' + prodCode);
-            sayEpisode(data, message.channel);
+	        var episode = db.child('episodes/prodCode/' + prodCode);
+            sayEpisode(bot, episode, message.channel);
         });
     }
     
+    // "@sorryjbot: season 01" response
     if (command === 'season') {
         var season = param;
         
         withFirebase(function() {
-	        db.ref('episodes/season/' + season)
-    	        .once('value')
-        	    .then(function (episodes) {
-            	    for (episode in episodes) {
-                	    sayEpisode(episode, message.channel);
-	                }
-    	        });
+	        var episodes = db.child('episodes/season/' + season);
+			for(episode in episodes) {
+				sayEpisode(bot, episode, message.channel);
+			}
     	});
     }    
 });
 
 // re-usable method to say an episode
-function sayEpisode(episode, channel) {
+function sayEpisode(bot, episode, channel) {
     bot.say({text: data.prodCode + ' ' + data.synopsis + ' ' + ' - by '  + data.author,
              channel: channel});
 }
