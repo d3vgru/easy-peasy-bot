@@ -240,7 +240,7 @@ controller.on('direct_mention', function (bot, message) {
 
 // re-usable method to say an episode
 function sayEpisode(bot, episode, channel) {
-    bot.say({text: data.prodCode + ' ' + data.synopsis + ' ' + ' - by '  + data.author,
+    bot.say({text: episode.prodCode + ' ' + episode.synopsis + ' - by ' + episode.author,
              channel: channel});
 }
 
